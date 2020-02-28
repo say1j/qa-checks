@@ -1,16 +1,27 @@
+/**
+    * Removes every second repeated word in translation string.
+    * Not case sensitive.
+    * All languages supported.
+    * Not configurable.
+    * @returns {Object} Returns collection of fixes with message if found dublicate words in translation.
+    * @example
+    * 
+    * Test test string.
+    * // => Test string.
+    */
 var result = {
   success: false
 }
 
-var translation = crowdin.translation
-var solution = []
+var translation = crowdin.translation,
+    solution = []
 
 function checkStr (str) {
-  var massOfWords = []
-  var indexUsedCount = -1
-  var indexArr = []
-  var tempIndex
-  var wordsPattern = /[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]+/g
+  var massOfWords = [],
+      indexUsedCount = -1,
+      indexArr = [],
+      tempIndex,
+      wordsPattern = /[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]+/g
   massOfWords = translation.match(wordsPattern)
   for (var i = 1; i < massOfWords.length; i++) {
     if (massOfWords[i - 1].toLowerCase() === massOfWords[i].toLowerCase()) {

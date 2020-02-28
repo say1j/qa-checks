@@ -1,6 +1,17 @@
-// Config section. Change as an example
+/**
+    * Inspect differences of mathematical symbols before translation and in the translation string.
+    * Configurable.
+    * @param {Array|Object} collection The collection of mathematical symbols.
+    * @returns {Object} Returns a message with mismatch symbols and collection of fixes for extra mathematical symbols in translation.
+    * @example
+    * 
+    * Mathematical equation in source string: 1+2≠8
+    * Mathematical equation in translation string: 1+2≠-8
+    * // => 1+2≠8
+    */
+// Config section
 
-var characters = ['+', '±', '–', '=', '≠', '≈', '≅', '≡', '*', '×', '÷', '/', '<', '>', '≤', '≥', '∑', '∏', '∫', '∩', '∀', '∃', '∅', '∂', '∇', '⊂', '⊃', '∪', '∈', '∉', '∋', '∠', '∴', '⊕', '⊗', '⊥', '√', '∝', '∞'] // Your math symbols
+var characters = ['+', '-', '±', '=', '≠', '≈', '≅', '≡', '*', '×', '÷', '/', '<', '>', '≤', '≥', '∑', '∏', '∫', '∩', '∀', '∃', '∅', '∂', '∇', '⊂', '⊃', '∪', '∈', '∉', '∋', '∠', '∴', '⊕', '⊗', '⊥', '√', '∝', '∞'] // Your math symbols
 
 // Code section
 
@@ -16,9 +27,25 @@ if (crowdin.contentType === 'application/vnd.crowdin.text+plural') {
 }
 
 var translation = crowdin.translation
-var regex = new RegExp('[' + characters.join('') + ']', 'g')
+
+if (characters.indexOf('-') === -1) {
+  regex = new RegExp('[' + characters.join('') + ']', 'g')
+} else {
+  regex = new RegExp('[\-' + RemoveCharacterFromArray('-').join('') + ']', 'g')
+}
+
 sourceMatch = source.match(regex)
 translationMatch = translation.match(regex)
+
+function RemoveCharacterFromArray(characterForRemoving) {
+  var outputArray = []
+  for (var currentCharacter in characters) {
+    if (currentCharacter !== characterForRemoving) {
+      outputArray.push(currentCharacter)
+    }
+  }
+  return outputArray
+}
 
 function UnionArrays (firstArray, secondArray) {
   var tempArray = firstArray.concat(secondArray)
@@ -42,12 +69,12 @@ function ArrayContains (array, item) {
 }
 
 if (sourceMatch != null || translationMatch != null) {
-  var sourceResult = {}
-  var translationResult = {}
-  var sourceProps = []
-  var translationProps = []
-  var mergedProps = []
-  var solution = []
+  var sourceResult = {},
+      translationResult = {},
+      sourceProps = [],
+      translationProps = [],
+      mergedProps = [],
+      solution = []
   if (sourceMatch != null && translationMatch != null) {
     for (var i = 0; i < sourceMatch.length; ++i) {
       var currentCharacter = sourceMatch[i]
@@ -78,9 +105,9 @@ if (sourceMatch != null || translationMatch != null) {
       mergedProps = sourceProps
     }
   }
-  var replacementArray = []
-  var missingArray = []
-  var extraArray = []
+  var replacementArray = [],
+      missingArray = [],
+      extraArray = []
   for (var u = 0; u < mergedProps.length; u++) {
     if (ArrayContains(sourceProps, mergedProps[u]) && ArrayContains(translationProps, mergedProps[u])) {
       if (sourceResult[mergedProps[u]] === translationResult[mergedProps[u]]) { // If match good, check next
@@ -100,8 +127,8 @@ if (sourceMatch != null || translationMatch != null) {
     }
   }
   if (replacementArray != null) { // Add fixes for extra symbols
-    var tempIndex
-    var repRegex = new RegExp('[' + replacementArray.join('') + ']', 'g')
+    var tempIndex,
+        repRegex = new RegExp('[' + replacementArray.join('') + ']', 'g')
     for (i = 0; i < replacementArray.length; i++) {
       for (j = 0; j < translationResult[replacementArray[i]]; j++) {
         tempIndex = repRegex.exec(translation).index
@@ -119,31 +146,31 @@ if (sourceMatch != null || translationMatch != null) {
     result.fixes = solution
     result.message = 'Math symbols. Missing in translation: '
     if (missingArray.length < 6) {
-      result.message += missingArray.join(', ') + '. '
+      result.message += '"' + missingArray.join('", "') + '". '
     } else {
-      result.message += missingArray.slice(0, 5).join(', ') + ' and others. '
+      result.message += '"' + missingArray.slice(0, 5).join('", "') + '" and others. '
     }
     result.message += 'Extra in translation: '
     if (extraArray.length < 6) {
-      result.message += extraArray.join(', ') + '.'
+      result.message += '"' + extraArray.join('", "') + '".'
     } else {
-      result.message += extraArray.slice(0, 5).join(', ') + ' and others.'
+      result.message += '"' + extraArray.slice(0, 5).join('", "') + '" and others.'
     }
   } else if (Array.isArray(missingArray) && missingArray.length && !(Array.isArray(extraArray) && extraArray.length)) {
     result.fixes = solution
     result.message = 'Math symbols. Missing in translation: '
     if (missingArray.length < 6) {
-      result.message += missingArray.join(', ') + '.'
+      result.message += '"' + missingArray.join('", "') + '".'
     } else {
-      result.message += missingArray.slice(0, 5).join(', ') + ' and others.'
+      result.message += '"' + missingArray.slice(0, 5).join('", "') + '" and others.'
     }
   } else if (!(Array.isArray(missingArray) && missingArray.length) && Array.isArray(extraArray) && extraArray.length) {
     result.fixes = solution
     result.message = 'Math symbols. Extra in translation: '
     if (extraArray.length < 6) {
-      result.message += extraArray.join(', ') + '.'
+      result.message += '"' + extraArray.join('", "') + '".'
     } else {
-      result.message += extraArray.slice(0, 5).join(', ') + ' and others.'
+      result.message += '"' + extraArray.slice(0, 5).join('", "') + '" and others.'
     }
   }
 } 
