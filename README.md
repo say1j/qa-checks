@@ -1,11 +1,11 @@
 # qa-checks (Karplyuk Volodymyr)
-• Duplacate words - Автофіксом видаляє кожне друге слово, що повторюється, враховуючи символи пунктуації. Не лишає зайвих пробілів. Не чутливий до регістру букв. Ловить всі мови. Не конфігурується.
+• Duplacate words - Removes every second repeated word in translation. Not case sensitive. All languages supported. Not configurable. Returns collection of fixes with message if found dublicate words in translation.
 
-• Forbidden characters - Детектить заборонені символи в перекладі із наперед заданого масиву, який можна сконфігурувати. В повідомленні з попередженням виводить список знадених унікальних заборонених символів, якщо їх більше 5 - виводить 5 перших, а інші опускає. Автофіксом видаляє їх з перекладу.
+• Forbidden characters - Detects forbidden characters in translation from a predefined configurable collection. The warning message displays a list of found unique forbidden characters, if more than 5 - displays the first 5. Autofix removes them from the translation.
 
-• Math symbols - Перевіряє чи збігається кількість математичних символів (наперед заданих конфігурованим масивом) у source та перекладі. У повідомлення для користувача виводить пропущені символі або зайві, якщо такі присутні. Зайві символи забирає автофіксом, розбіжності не чіпає, щоб не порушити математичні формули.
+• Math symbols - Inspect differences of mathematical symbols before translation and in the translation. Configurable by collection of mathematical symbols. Returns the message with mismatch symbols and collection of fixes for extra mathematical symbols in translation.
 
-• Translation too short - розбиває source та переклад на слова, сумує довжину цих слів та у відповідності до заданого мінімального відсотка виводить повідомлення про те, що переклад надто короткий.
+• Translation too short - Counts the length of words before and after translation, compares it to the minimum percentage. Configurable by minimum percentage value, which is calculates as follows: (the length of the translation words) / (the length of words to translate). Returns a message when translation is too short.
 
 ------------------------------
 • Localization (Не перевірені)
