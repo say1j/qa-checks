@@ -2,7 +2,7 @@
     * Inspect differences of mathematical symbols before translation and in the translation string.
     * Configurable.
     * @param {Array|Object} collection The collection of mathematical symbols.
-    * @returns {Object} Returns a message with mismatch symbols and collection of fixes for extra mathematical symbols in translation.
+    * @returns {Object} Returns the message with mismatch symbols and collection of fixes for extra mathematical symbols in translation.
     * @example
     * 
     * Mathematical equation in source string: 1+2≠8
