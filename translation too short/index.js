@@ -1,7 +1,7 @@
 /**
-    * Counts the length of words before and after the translation, compares it to the minimum percentage.
+    * Counts the length of words before and after translation, compares it to the minimum percentage.
     * Configurable.
-    * @param {Number} The minimum percentage for which translation is not considered too short. It is calculated as follows:
+    * @param {Number} The minimum percentage for which translation is not considered too short. It is calculates as follows:
     * (the length of the translation words) / (the length of words to translate)
     * @returns {Object} Returns a message when translation is too short.
     * @example (Minimum percentage is 25%)
