@@ -10,5 +10,5 @@
 ------------------------------
 Не перевірені на правильність англійської
 1. File name localization - перевіряє зміну назв файлів відповідно до таргет мови перекладу. Список з відповідностями мов та назв файлів конфігурується.
-2. Mail localization - This QA check inspects whether emails are correctly localized in translation string. Configurable by the email, which need to be localizated and the localizated email for target language. Returns a message with mismatch localizated emails in translation.
-3. URL localization - перевіряє зміну доменів сайту відповідно до таргет мови перекладу. Список з відповідностями мов та доменів конфігурується.
+2. Mail localization - This QA check inspects whether emails are correctly localized in translation string. Configurable by the email, which need to be localizated and the localizated email for target languages. Returns a message with mismatch localizated emails in translation.
+3. URL localization - This QA check inspects whether URLs are correctly localized in translation string. Configurable by the Url, which need to be localizated and the localizated URLs for target languages. Returns a message with mismatch localizated URLs in translation.
