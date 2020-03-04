@@ -1,3 +1,15 @@
+/**
+    * Checks whether URLs are correctly localized in translation string.
+    * Configurable.
+    * @param {String} The URL, which need to be localizated.
+    * @param {String} The localizated URL for target language.
+    * @returns {Object} Returns a message with mismatch localizated URLs in translation.
+    * @example
+    * 
+    * Source string: Check our products: https://www.crowdin.com.
+    * Translation string: Подивіться нашу продукцію: https://www.crowdin.wrong.ua.
+    * // => Message: URL localization. Found 1 missed localizated URL(s) in translation.
+    */
 // Config section
 
 var yourTargetDomainUrl
@@ -36,9 +48,13 @@ var result = {
   success: false
 }
 
-if (crowdin.contentType === 'application/vnd.crowdin.text+plural') {
+if (crowdin.contentType == 'application/vnd.crowdin.text+plural') {
   var obj = JSON.parse(crowdin.source)
-  source = obj[crowdin.context.pluralForm]
+  if (obj[crowdin.context.pluralForm] != null) {
+    source = obj[crowdin.context.pluralForm]
+  } else {
+    source = obj.other
+  }
 } else {
   source = crowdin.source
 }
@@ -56,18 +72,18 @@ if (sourceMatch == null || translationMatch == null) {
   if (sourceMatch == null && translationMatch == null) {
     result.success = true
   } else if (sourceMatch == null && translationMatch != null) {
-    result.message = 'URL localization. Found extra localizated URL in translation.'
+    result.message = 'URL localization. Found ' + translationMatch.length + ' extra localizated URL in translation.'
     result.fixes = []
   } else if (sourceMatch != null && translationMatch == null) {
-    result.message = 'URL localization. Found missed localizated URL in translation.'
+    result.message = 'URL localization. Found ' + sourceMatch.length + ' missed localizated URL in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length !== translationMatch.length) {
   if (sourceMatch.length <= translationMatch.length) {
-    result.message = 'URL localization. Found extra localizated URL in translation.'
+    result.message = 'URL localization. Found ' + (translationMatch.length - sourceMatch.length) + ' extra localizated URL in translation.'
     result.fixes = []
   } else if (sourceMatch.length >= translationMatch.length) {
-    result.message = 'URL localization. Found missed localizated URL in translation.'
+    result.message = 'URL localization. Found ' + (sourceMatch.length - translationMatch.length) + ' missed localizated URL in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length === translationMatch.length) {
