@@ -1,43 +1,44 @@
 /**
-    * Checks whether emails are correctly localized in translation string.
+    * Checks whether URLs are correctly localized in translation string.
     * Configurable.
-    * @param {String} The email, which need to be localizated.
-    * @param {String} The localizated email for target language.
-    * @returns {Object} Returns a message with mismatch localizated emails in translation.
+    * @param {String} The URL, which need to be localizated.
+    * @param {String} The localizated URL for target language.
+    * @returns {Object} Returns a message with mismatch localizated URLs in translation.
     * @example
     * 
-    * Source string: Contact our support: example@crowdin.com.
-    * Translation string: Зверніться до нашої служби підтримки: wrong.localizated.email@wrong.com.
-    * // => Message: Email localization. Found 1 missed localizated email(s) in translation.
+    * Source string: Check our products: https://www.crowdin.com.
+    * Translation string: Подивіться нашу продукцію: https://www.crowdin.wrong.ua.
+    * // => Message: URL localization. Found 1 missed localizated URL(s) in translation.
     */
 // Config section
 
-var yourTargetEmail
-var yourSourceEmail = 'example@crowdin.com' // Set your main email in next format 'example@crowdin.com'
+var yourTargetDomainUrl
+var yourMainDomainUrl = 'crowdin.com' // Set your main domain URL in next format 'example.com', 'www.example.com' or 'example.com.ua'
 
-// Configure next function with your target languages and related emails in the following form:
+// Configure next function with your target languages and related domains in the following form:
+
 // case 'your target language':
-// yourTargetEmail = 'example@crowdin.com' where 'example@crowdin.com' your email for current language
+// yourTargetDomainUrl = 'example.com' where 'example.com' or 'example.com.ua' your domain for current language
 
 switch (crowdin.targetLanguage) {
   case 'uk':
-    yourTargetEmail = 'example@crowdin.ua'
+    yourTargetDomainUrl = 'crowdin.ua'
     break
 
   case 'de':
-    yourTargetEmail = 'example@crowdin.de'
+    yourTargetDomainUrl = 'crowdin.de'
     break
 
   case 'pl':
-    yourTargetEmail = 'example@crowdin.com.pl'
+    yourTargetDomainUrl = 'crowdin.com.pl'
     break
 
   case 'es':
-    yourTargetEmail = 'example@crowdin.es'
+    yourTargetDomainUrl = 'crowdin.es'
     break
 
-  default: // If there is no specific emails for target language, the source email will be selected
-    yourTargetEmail = yourSourceEmail
+  default: // If there is no specific domain for target language, the main domain will be selected
+    yourTargetDomainUrl = yourMainDomainUrl
     break
 }
 
@@ -59,30 +60,30 @@ if (crowdin.contentType == 'application/vnd.crowdin.text+plural') {
 }
 
 var translation = crowdin.translation
-var patternForSourceMail, patternForTargetMail
+var patternForMainDomain, patternForTargetDomain
 
-patternForSourceMail = new RegExp ('[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@' + yourSourceEmail.split('@')[1], 'g')
-patternForTargetMail = new RegExp ('[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@' + yourTargetEmail.split('@')[1], 'g')
+patternForMainDomain = new RegExp('((https?):\/\/|(https?):\/\/www.)' + yourMainDomainUrl, 'g')
+patternForTargetDomain = new RegExp('((https?):\/\/|(https?):\/\/www.)' + yourTargetDomainUrl, 'g')
 
-var sourceMatch = source.match(patternForSourceMail)
-var translationMatch = translation.match(patternForTargetMail)
+var sourceMatch = source.match(patternForMainDomain)
+var translationMatch = translation.match(patternForTargetDomain)
 
 if (sourceMatch == null || translationMatch == null) {
   if (sourceMatch == null && translationMatch == null) {
     result.success = true
   } else if (sourceMatch == null && translationMatch != null) {
-    result.message = 'Email localization. Found ' + translationMatch.length + ' extra localizated email(s) in translation.'
+    result.message = 'URL localization. Found ' + translationMatch.length + ' extra localizated URL in translation.'
     result.fixes = []
   } else if (sourceMatch != null && translationMatch == null) {
-    result.message = 'Email localization. Found ' + sourceMatch.length + ' missed localizated email(s) in translation.'
+    result.message = 'URL localization. Found ' + sourceMatch.length + ' missed localizated URL in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length !== translationMatch.length) {
   if (sourceMatch.length <= translationMatch.length) {
-    result.message = 'Email localization. Found ' + (translationMatch.length - sourceMatch.length) + ' extra localizated email(s) in translation.'
+    result.message = 'URL localization. Found ' + (translationMatch.length - sourceMatch.length) + ' extra localizated URL in translation.'
     result.fixes = []
   } else if (sourceMatch.length >= translationMatch.length) {
-    result.message = 'Email localization. Found ' + (sourceMatch.length - translationMatch.length) + ' missed localizated email(s) in translation.'
+    result.message = 'URL localization. Found ' + (sourceMatch.length - translationMatch.length) + ' missed localizated URL in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length === translationMatch.length) {
