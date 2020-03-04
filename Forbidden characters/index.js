@@ -38,7 +38,7 @@ if (translationMatch != null) {
   var uniqueArray = UniqueCharacters(translationMatch),
       solution = [],
       tempIndex
-  result.message = 'Forbidden characters. The translation contains ' + uniqueArray.length + ' forbidden character(s): '
+  result.message = 'Forbidden characters. The translation contains ' + translationMatch.length + ' forbidden character(s): '
   if (uniqueArray.length < 6) {
     result.message += '"' + uniqueArray.join('", "') + '".'
   } else {
