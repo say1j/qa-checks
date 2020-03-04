@@ -1,10 +1,21 @@
+/**
+    * Checks whether emails are correctly localized in translation string.
+    * Configurable.
+    * @param {String} The email, which need to be localizated.
+    * @param {String} The localizated email for target language.
+    * @returns {Object} Returns a message with mismatch localizated emails in translation.
+    * @example
+    * 
+    * Source string: Contact our support: example@crowdin.com.
+    * Translation string: Зверніться до нашої служби підтримки: wrong.localizated.email@wrong.com.
+    * // => Message: Email localization. Found 1 missed localizated email(s) in translation.
+    */
 // Config section
 
 var yourTargetEmail
 var yourSourceEmail = 'example@crowdin.com' // Set your main email in next format 'example@crowdin.com'
 
 // Configure next function with your target languages and related emails in the following form:
-
 // case 'your target language':
 // yourTargetEmail = 'example@crowdin.com' where 'example@crowdin.com' your email for current language
 
@@ -56,18 +67,18 @@ if (sourceMatch == null || translationMatch == null) {
   if (sourceMatch == null && translationMatch == null) {
     result.success = true
   } else if (sourceMatch == null && translationMatch != null) {
-    result.message = 'Email localization. Found extra localizated email in translation.'
+    result.message = 'Email localization. Found ' + translationMatch.length + ' extra localizated email(s) in translation.'
     result.fixes = []
   } else if (sourceMatch != null && translationMatch == null) {
-    result.message = 'Email localization. Found missed localizated email in translation.'
+    result.message = 'Email localization. Found ' + sourceMatch.length + ' missed localizated email(s) in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length !== translationMatch.length) {
   if (sourceMatch.length <= translationMatch.length) {
-    result.message = 'Email localization. Found extra localizated email in translation.'
+    result.message = 'Email localization. Found ' + (translationMatch.length - sourceMatch.length) + ' extra localizated email(s) in translation.'
     result.fixes = []
   } else if (sourceMatch.length >= translationMatch.length) {
-    result.message = 'Email localization. Found missed localizated email in translation.'
+    result.message = 'Email localization. Found ' + (sourceMatch.length - translationMatch.length) + ' missed localizated email(s) in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length === translationMatch.length) {
