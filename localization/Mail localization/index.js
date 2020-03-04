@@ -47,9 +47,13 @@ var result = {
   success: false
 }
 
-if (crowdin.contentType === 'application/vnd.crowdin.text+plural') {
+if (crowdin.contentType == 'application/vnd.crowdin.text+plural') {
   var obj = JSON.parse(crowdin.source)
-  source = obj[crowdin.context.pluralForm]
+  if (obj[crowdin.context.pluralForm] != null) {
+    source = obj[crowdin.context.pluralForm]
+  } else {
+    source = obj.other
+  }
 } else {
   source = crowdin.source
 }
