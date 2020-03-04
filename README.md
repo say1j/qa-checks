@@ -5,10 +5,10 @@
 
 • Math symbols - This QA check inspects differences of mathematical symbols between source text and translation. It's configurable by collection of mathematical symbols. Returns the message with mismatch symbols and collection of fixes for extra mathematical symbols in translation.
 
-• Translation is too short - This Qa check cunts the length of words in the source text and translation, compares it to the minimum percentage. It's configurable by minimum percentage value, which is calculateed in the following way: (the length of the translation) / (the length of the source text). Returns a message when translation is too short.
+• Translation is too short - This QA check cunts the length of words in the source text and translation, compares it to the minimum percentage. It's configurable by minimum percentage value, which is calculateed in the following way: (the length of the translation) / (the length of the source text). Returns a message when translation is too short.
 
 ------------------------------
-• Localization (Не перевірені)
+Не перевірені на правильність англійської
 1. File name localization - перевіряє зміну назв файлів відповідно до таргет мови перекладу. Список з відповідностями мов та назв файлів конфігурується.
-2. Mail localization - перевіряє зміну адрес емейлів відповідно до таргет мови перекладу. Список з відповідностями мов та емейлів конфігурується.
+2. Mail localization - This QA check inspects whether emails are correctly localized in translation string. Configurable by the email, which need to be localizated and the localizated email for target language. Returns a message with mismatch localizated emails in translation.
 3. URL localization - перевіряє зміну доменів сайту відповідно до таргет мови перекладу. Список з відповідностями мов та доменів конфігурується.
