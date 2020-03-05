@@ -9,6 +9,7 @@
 
 ------------------------------
 Не перевірені на правильність англійської
+
 • File name localization - This QA check inspects whether file names are correctly localized in translation. Configurable by the file name, which need to be localizated and the localizated file name for target languages. Returns a message with mismatch localizated file names in translation.
 
 • Mail localization - This QA check inspects whether emails are correctly localized in translation. Configurable by the email, which need to be localizated and the localizated email for target languages. Returns a message with mismatch localizated emails in translation.
