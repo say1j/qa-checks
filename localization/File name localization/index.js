@@ -64,9 +64,6 @@ patternForYourTargetFileName = new RegExp ('(?<=\\s|^)' + yourTargetFileName.rep
 var sourceMatch = source.match(patternForYourMainFileName)
 var translationMatch = translation.match(patternForYourTargetFileName)
 
-result.s = sourceMatch
-result.t = translationMatch
-
 if (sourceMatch == null || translationMatch == null) {
   if (sourceMatch == null && translationMatch == null) {
     result.success = true
