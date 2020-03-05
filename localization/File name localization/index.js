@@ -1,7 +1,19 @@
+/**
+    * Checks whether file names are correctly localized in translation string.
+    * Configurable.
+    * @param {String} The file name, which need to be localizated.
+    * @param {String} The localizated file name for target language.
+    * @returns {Object} Returns a message with mismatch localizated file names in translation.
+    * @example
+    * 
+    * Source string: Open example.txt file.
+    * Translation string: Відкрийте wrong_localizated_file_name.txt файл.
+    * // => Message: File localization. Found 1 missed localizated file name(s) in translation.
+    */
 // Config section
 
 var yourTargetFileName
-var yourMainFileName = 'exampple.txt' // Set your main file name
+var yourMainFileName = 'example.txt' // Set your main file name
 
 // Configure next function with your target languages and related file names in the following form:
 
@@ -46,28 +58,31 @@ if (crowdin.contentType === 'application/vnd.crowdin.text+plural') {
 var translation = crowdin.translation
 var patternForMainFileName, patternForTargetFileName
 
-patternForYourMainFileName = new RegExp(yourMainFileName, 'g')
-patternForYourTargetFileName = new RegExp(yourTargetFileName, 'g')
+patternForYourMainFileName = new RegExp ('(?<=\\s|^)' + yourMainFileName.replace('.', '\\.') + '(?=\\s|$|\\.\\s)', 'gm')
+patternForYourTargetFileName = new RegExp ('(?<=\\s|^)' + yourTargetFileName.replace('.', '\\.') + '(?=\s|$|\\.\\s)', 'gm')
 
 var sourceMatch = source.match(patternForYourMainFileName)
 var translationMatch = translation.match(patternForYourTargetFileName)
+
+result.s = sourceMatch
+result.t = translationMatch
 
 if (sourceMatch == null || translationMatch == null) {
   if (sourceMatch == null && translationMatch == null) {
     result.success = true
   } else if (sourceMatch == null && translationMatch != null) {
-    result.message = 'File name localization. Found extra localizated file name in translation.'
+    result.message = 'File localization. Found ' + translationMatch.length + ' extra localizated file name(s) in translation.'
     result.fixes = []
   } else if (sourceMatch != null && translationMatch == null) {
-    result.message = 'File name localization. Found missed localizated file name in translation.'
+    result.message = 'File localization. Found ' + sourceMatch.length + ' missed localizated file name(s) in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length !== translationMatch.length) {
   if (sourceMatch.length <= translationMatch.length) {
-    result.message = 'File name localization. Found extra localizated file name in translation.'
+    result.message = 'File localization. Found ' + (translationMatch.length - sourceMatch.length) + ' extra localizated file name(s) in translation.'
     result.fixes = []
   } else if (sourceMatch.length >= translationMatch.length) {
-    result.message = 'File name localization. Found missed localizated file name in translation.'
+    result.message = 'File localization. Found ' + (sourceMatch.length - translationMatch.length) + ' missed localizated file name(s) in translation.'
     result.fixes = []
   }
 } else if (sourceMatch.length === translationMatch.length) {
