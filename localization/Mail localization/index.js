@@ -61,8 +61,8 @@ if (crowdin.contentType == 'application/vnd.crowdin.text+plural') {
 var translation = crowdin.translation
 var patternForSourceMail, patternForTargetMail
 
-patternForSourceMail = new RegExp ('(?<=\\s|^)' + yourSourceEmail + '(?=\\s|$)', 'gm')
-patternForTargetMail = new RegExp ('(?<=\\s|^)' + yourTargetEmail + '(?=\\s|$)', 'gm')
+patternForSourceMail = new RegExp ('(?<=\\s|^)' + yourSourceEmail.replace('.', '\\.') + '(?=\\s|$|\\.\\s)', 'gm')
+patternForTargetMail = new RegExp ('(?<=\\s|^)' + yourTargetEmail.replace('.', '\\.') + '(?=\\s|$|\\.\\s)', 'gm')
 
 var sourceMatch = source.match(patternForSourceMail)
 var translationMatch = translation.match(patternForTargetMail)
