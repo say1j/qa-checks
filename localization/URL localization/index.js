@@ -62,14 +62,11 @@ if (crowdin.contentType == 'application/vnd.crowdin.text+plural') {
 var translation = crowdin.translation
 var patternForMainDomain, patternForTargetDomain
 
-patternForMainDomain = new RegExp('(?<=\\s|^)((https?):\/\/|(https?):\/\/www.)' + yourMainDomainUrl + '(?=\\s|$)', 'gm')
-patternForTargetDomain = new RegExp('(?<=\\s|^)((https?):\/\/|(https?):\/\/www.)' + yourTargetDomainUrl + '(?=\\s|$)', 'gm')
+patternForMainDomain = new RegExp('(?<=\\s|^)((https?):\/\/|(https?):\/\/www.)' + yourMainDomainUrl.replace('.', '\\.') + '(?=\\s|$|\\.\\s)', 'gm')
+patternForTargetDomain = new RegExp('(?<=\\s|^)((https?):\/\/|(https?):\/\/www.)' + yourTargetDomainUrl.replace('.', '\\.') + '(?=\\s|$|\\.\\s)', 'gm')
 
 var sourceMatch = source.match(patternForMainDomain)
 var translationMatch = translation.match(patternForTargetDomain)
-result.source = source
-result.s = sourceMatch
-result.t = translationMatch
 
 if (sourceMatch == null || translationMatch == null) {
   if (sourceMatch == null && translationMatch == null) {
