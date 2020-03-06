@@ -1,44 +1,48 @@
 /**
     * Checks whether file names are correctly localized in translation string.
     * Configurable.
-    * @param {String} The file name, which need to be localizated.
-    * @param {String} The localizated file name for target language.
+    * @param {Array|Object} collection The collection of file names for ignore localization.
+    * @param {Array|Object} collection The collection of file names for localization.
+    * @param {Array|Object} collection The collection of file names for target languages.
     * @returns {Object} Returns a message with mismatch localizated file names in translation.
     * @example
     * 
-    * Source string: Open example.txt file.
+    * Source string: Open example1.txt file.
     * Translation string: Відкрийте wrong_localizated_file_name.txt файл.
     * // => Message: File localization. Found 1 missed localizated file name(s) in translation.
     */
 // Config section
-
-var yourTargetFileName
-var yourMainFileName = 'example.txt' // Set your main file name
+var ignoreMassive = ['ignore1.txt', 'ignore2.txt'] // Set your file names for ignore
+var yourMainFileNames = ['example1.txt', 'example2.txt'] // Set your main file names
+var yourTargetFileNames = []
 
 // Configure next function with your target languages and related file names in the following form:
 
 // case 'your target language':
-// yourTargetFileName = 'example.txt' where 'example.txt' your file name for current language
+// yourTargetFileNames = ['example1_trg1.txt', 'example2_trg2.txt'] where 'example1_trg1.txt', 'example2_trg2.txt' your file names for current language
 
 switch (crowdin.targetLanguage) {
   case 'uk':
-    yourTargetFileName = 'example_uk.txt'
+    yourTargetFileNames = ['example1_UA.txt', 'example2_UA.txt']
     break
 
   case 'de':
-    yourTargetFileName = 'example_de.txt'
+    yourTargetFileNames = ['example1_DE.txt', 'example2_DE.txt']
     break
 
   case 'pl':
-    yourTargetFileName = 'example_pl.txt'
+    yourTargetFileNames = ['example1_PLND.txt', 'example2_PLND.txt']
     break
 
   case 'es':
-    yourTargetFileName = 'example_es.txt'
+    yourTargetFileNames = ['example1_ESP.txt', 'example2_ESP.txt']
     break
 
-  default: // If there is no specific file name for target language, the main file name will be selected
-    yourTargetFileName = yourMainFileName
+  default: // If there is no specific file names for target language, the main file names will be selected with auto configurable suffix before the last dot
+    // yourMainFileNames.forEach(element => yourTargetFileNames.push(SetCharAt(element, element.lastIndexOf('.'), '_' + crowdin.targetLanguage + '.')))
+    for (var i = 0; i < yourMainFileNames.length; i++) {
+      yourTargetFileNames.push(SetCharAt(yourMainFileNames[i], yourMainFileNames[i].lastIndexOf('.'), '_' + crowdin.targetLanguage + '.'))
+    }
     break
 }
 
@@ -48,42 +52,63 @@ var result = {
   success: false
 }
 
-if (crowdin.contentType === 'application/vnd.crowdin.text+plural') {
+function SetCharAt (str, index, chr) {
+  if (index > str.length - 1) return str
+  return str.substr(0, index) + chr + str.substr(index + 1)
+}
+
+if (crowdin.contentType == 'application/vnd.crowdin.text+plural') {
   var obj = JSON.parse(crowdin.source)
-  source = obj[crowdin.context.pluralForm]
+  if (obj[crowdin.context.pluralForm] != null) {
+    source = obj[crowdin.context.pluralForm]
+  } else {
+    source = obj.other
+  }
 } else {
   source = crowdin.source
 }
 
 var translation = crowdin.translation
-var patternForMainFileName, patternForTargetFileName
+var patternForFileNames = new RegExp('(?<=\\s|^)[a-z0-9A-Z_\\.]+\\.[A-Za-z]{1,3}(?=\\s|$|\\.\\s)', 'gm')
+var sourceMatch = source.match(patternForFileNames)
+var translationMatch = translation.match(patternForFileNames)
+var fileNamesForLocalization = []
+var fileNamesLocalizted = []
 
-patternForYourMainFileName = new RegExp ('(?<=\\s|^)' + yourMainFileName.replace('.', '\\.') + '(?=\\s|$|\\.\\s)', 'gm')
-patternForYourTargetFileName = new RegExp ('(?<=\\s|^)' + yourTargetFileName.replace('.', '\\.') + '(?=\s|$|\\.\\s)', 'gm')
+// sourceMatch.forEach(element => (ignoreMassive.indexOf(element) === -1 && yourMainFileNames.indexOf(element) !== -1) ? fileNamesForLocalization.push(element) : null)
+// translationMatch.forEach(element => (ignoreMassive.indexOf(element) === -1 && yourTargetFileNames.indexOf(element) !== -1) ? fileNamesLocalizted.push(element) : null)
 
-var sourceMatch = source.match(patternForYourMainFileName)
-var translationMatch = translation.match(patternForYourTargetFileName)
-
-if (sourceMatch == null || translationMatch == null) {
-  if (sourceMatch == null && translationMatch == null) {
-    result.success = true
-  } else if (sourceMatch == null && translationMatch != null) {
-    result.message = 'File localization. Found ' + translationMatch.length + ' extra localizated file name(s) in translation.'
-    result.fixes = []
-  } else if (sourceMatch != null && translationMatch == null) {
-    result.message = 'File localization. Found ' + sourceMatch.length + ' missed localizated file name(s) in translation.'
-    result.fixes = []
+if (sourceMatch != null) {
+  for (var i = 0; i < sourceMatch.length; i++) {
+    (ignoreMassive.indexOf(sourceMatch[i]) === -1 && yourMainFileNames.indexOf(sourceMatch[i]) !== -1) ? fileNamesForLocalization.push(sourceMatch[i]) : null
   }
-} else if (sourceMatch.length !== translationMatch.length) {
-  if (sourceMatch.length <= translationMatch.length) {
-    result.message = 'File localization. Found ' + (translationMatch.length - sourceMatch.length) + ' extra localizated file name(s) in translation.'
-    result.fixes = []
-  } else if (sourceMatch.length >= translationMatch.length) {
-    result.message = 'File localization. Found ' + (sourceMatch.length - translationMatch.length) + ' missed localizated file name(s) in translation.'
-    result.fixes = []
-  }
-} else if (sourceMatch.length === translationMatch.length) {
-  result.success = true
 }
 
+if (translationMatch != null) {
+  for (var i = 0; i < translationMatch.length; i++) {
+    (ignoreMassive.indexOf(translationMatch[i]) === -1 && yourTargetFileNames.indexOf(translationMatch[i]) !== -1) ? fileNamesLocalizted.push(translationMatch[i]) : null
+  }
+}
+
+if (fileNamesLocalizted == null || fileNamesForLocalization == null) {
+  if (fileNamesLocalizted == null && fileNamesForLocalization == null) {
+    result.success = true
+  } else if (fileNamesLocalizted == null && fileNamesForLocalization != null) {
+    result.message = 'File localization. Found ' + fileNamesForLocalization.length + ' missed localizated file name(s) in translation.'
+    result.fixes = []
+  } else if (fileNamesLocalizted != null && fileNamesForLocalization == null) {
+    result.message = 'File localization. Found ' + fileNamesLocalizted.length + ' extra localizated file name(s) in translation.'
+    result.fixes = []
+  }
+} else if (fileNamesLocalizted.length !== fileNamesForLocalization.length) {
+  if (fileNamesLocalizted.length <= fileNamesForLocalization.length) {
+    result.message = 'File localization. Found ' + (fileNamesForLocalization.length - fileNamesLocalizted.length) + ' missed localizated file name(s) in translation.'
+    result.fixes = []
+  } else if (fileNamesLocalizted.length >= fileNamesForLocalization.length) {
+    result.message = 'File localization. Found ' + (fileNamesLocalizted.length - fileNamesForLocalization.length) + ' extra localizated file name(s) in translation.'
+    result.fixes = []
+  }
+} else if (fileNamesLocalizted.length === fileNamesForLocalization.length) {
+  result.success = true
+}
 return result
