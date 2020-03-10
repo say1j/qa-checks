@@ -2,7 +2,6 @@
     * Checks whether file names are correctly localized in translation string.
     * Configurable.
     * @param {Array|Object} collection The collection of file names for ignore localization.
-    * @param {Array|Object} collection The collection of file names for localization.
     * @param {Array|Object} collection The collection of file names for target languages.
     * @returns {Object} Returns a message with mismatch localizated file names in translation.
     * @example
@@ -13,7 +12,6 @@
     */
 // Config section
 var ignoreMassive = ['ignore1.txt', 'ignore2.txt'] // Set your file names for ignore
-var yourMainFileNames = ['example1.txt', 'example2.txt'] // Set your main file names
 var yourTargetFileNames = []
 
 // Configure next function with your target languages and related file names in the following form:
@@ -80,7 +78,7 @@ var fileNamesLocalizted = []
 
 if (sourceMatch != null) {
   for (var i = 0; i < sourceMatch.length; i++) {
-    (ignoreMassive.indexOf(sourceMatch[i]) === -1 && yourMainFileNames.indexOf(sourceMatch[i]) !== -1) ? fileNamesForLocalization.push(sourceMatch[i]) : null
+    (ignoreMassive.indexOf(sourceMatch[i]) === -1) ? fileNamesForLocalization.push(sourceMatch[i]) : null
   }
 }
 
