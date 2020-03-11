@@ -1,7 +1,7 @@
 /**
     * Checks whether file names are correctly localized in translation string.
     * Configurable.
-    * @param {Array|Object} collection The collection of file names for ignore localization.
+    * @param {Array|Object} collection The collection of file names for localization.
     * @param {Array|Object} collection The collection of file names for target languages.
     * @returns {Object} Returns a message with mismatch localizated file names in translation.
     * @example
@@ -11,8 +11,8 @@
     * // => Message: File localization. Found 1 missed localizated file name(s) in translation.
     */
 // Config section
-var ignoreMassive = ['ignore1.txt', 'ignore2.txt'] // Set your file names for ignore
-var yourTargetFileNames = []
+var yourMainFileNames = ['example1.txt', 'example2.txt'] // Your collection of file names for localization
+var yourTargetFileNames = [] // Leave blank
 
 // Configure next function with your target languages and related file names in the following form:
 
@@ -73,18 +73,15 @@ var translationMatch = translation.match(patternForFileNames)
 var fileNamesForLocalization = []
 var fileNamesLocalizted = []
 
-// sourceMatch.forEach(element => (ignoreMassive.indexOf(element) === -1 && yourMainFileNames.indexOf(element) !== -1) ? fileNamesForLocalization.push(element) : null)
-// translationMatch.forEach(element => (ignoreMassive.indexOf(element) === -1 && yourTargetFileNames.indexOf(element) !== -1) ? fileNamesLocalizted.push(element) : null)
-
 if (sourceMatch != null) {
   for (var i = 0; i < sourceMatch.length; i++) {
-    (ignoreMassive.indexOf(sourceMatch[i]) === -1) ? fileNamesForLocalization.push(sourceMatch[i]) : null
+    (yourMainFileNames.indexOf(sourceMatch[i]) !== -1) ? fileNamesForLocalization.push(sourceMatch[i]) : null
   }
 }
 
 if (translationMatch != null) {
   for (var i = 0; i < translationMatch.length; i++) {
-    (ignoreMassive.indexOf(translationMatch[i]) === -1 && yourTargetFileNames.indexOf(translationMatch[i]) !== -1) ? fileNamesLocalizted.push(translationMatch[i]) : null
+    (yourTargetFileNames.indexOf(translationMatch[i]) !== -1) ? fileNamesLocalizted.push(translationMatch[i]) : null
   }
 }
 
