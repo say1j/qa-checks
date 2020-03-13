@@ -1,14 +1,3 @@
-var crowdin = {
-  "sourceLanguage": "uk",
-  "targetLanguage": "es",
-  "context": {
-    "maxLength": 10
-  },
-  "contentType": "text/plain",
-  "source": "!!sad",
-  "translation": "?¿¿¡"
-}
-
 var config = {
   "es": {
     "¿": "?",
@@ -115,5 +104,5 @@ if (sourceMatch !== null) {
 } else {
   result.success = true
 }
-console.debug(result)
+
 return result
