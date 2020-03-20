@@ -40,6 +40,18 @@ function JoinWithQuotes (array) {
 return array.length < 5 ? '"' + array.join('", "') + '"' : array.slice(0, 5).join('", "') + '" and others'
 }
 
+function Quotes (str) {
+  return '"' + str + '"'
+}
+
+function ExtraTimes(element, times) {
+  return Quotes(element) + ' extra localized ' + times + ' time(s).'
+}
+
+function DoesntTimes(element, times) {
+  return Quotes(element) + ' doesn`t localized ' + times + ' time(s).'
+}
+
 function UniqueCharacters (inputArray) {
 var outputArray = []
 var currentCharacter
@@ -79,20 +91,32 @@ sourceResult !== undefined ? sourceResultPropertyNames = Object.getOwnPropertyNa
 var translationResultPropertyNames
 translationResult !== null ? translationResultPropertyNames = Object.getOwnPropertyNames(translationResult) : null
 var notAllowedInSourceArray = []
-if (sourceMatch !== null) {
+if (sourceMatch !== null || translationMatch !== null) {
   var currentSymbol
   var notLocalizedSymbols = []
   if (translationResult === null) {
     result.fixes = []
     result.message = 'Spanish Punctuation. Please localize next punctuation symbol(s): ' + JoinWithQuotes(sourceResultPropertyNames) + '.'
   } else { // Output mismatch
-    for (i = 0; i < sourcePropertyValues.length; i++) {
-      if (translationResult[sourcePropertyNames[sourcePropertyValues.indexOf(sourcePropertyValues[i])]] < sourceResult[sourcePropertyValues[i]]) {
-        notLocalizedSymbols.push('"' + sourcePropertyValues[i] + '" doesn`t localized ' + (sourceResult[sourcePropertyValues[i]] - translationResult[sourcePropertyNames[sourcePropertyValues.indexOf(sourcePropertyValues[i])]]) + ' time(s)')
-      } else if (translationResult[sourcePropertyNames[sourcePropertyValues.indexOf(sourcePropertyValues[i])]] > sourceResult[sourcePropertyValues[i]]) {
-        notLocalizedSymbols.push('"' + sourcePropertyValues[i] + '" extra localized ' + (translationResult[sourcePropertyNames[sourcePropertyValues.indexOf(sourcePropertyValues[i])]] - sourceResult[sourcePropertyValues[i]]) + ' time(s)')
-      } else if (translationResult[sourcePropertyNames[sourcePropertyValues.indexOf(sourcePropertyValues[i])]] === undefined) {
-        notLocalizedSymbols.push('"' + sourcePropertyValues[i] + '" doesn`t localized ' + sourceResult[sourcePropertyValues[i]] + ' time(s)')
+    if (sourceResult === undefined) {
+      for (i = 0; i < translationResultPropertyNames.length; i++) {
+        notLocalizedSymbols.push(ExtraTimes(translationResultPropertyNames[i], translationResult[translationResultPropertyNames[i]]))
+      }
+    } else {
+      for (i = 0; i < sourcePropertyValues.length; i++) {
+        if (sourceResult[sourcePropertyValues[i]] === undefined) { // if source symbol undefined, check translation for extra 
+          translationResult[sourcePropertyNames[i]] === undefined ? null : notLocalizedSymbols.push(ExtraTimes(sourcePropertyValues[i], translationResult[sourcePropertyNames[i]]))
+        } else {
+          if (translationResult[sourcePropertyNames[i]] === undefined) {
+            notLocalizedSymbols.push(DoesntTimes(sourcePropertyValues[i], sourceResult[sourcePropertyValues[i]]))
+          } else if (sourceResult[sourcePropertyValues[i]] === translationResult[sourcePropertyNames[i]]) {
+            continue
+          } else {
+            (sourceResult[sourcePropertyValues[i]] > translationResult[sourcePropertyNames[i]]) ? notLocalizedSymbols.push(
+              DoesntTimes(sourcePropertyValues[i], (sourceResult[sourcePropertyValues[i]] - translationResult[sourcePropertyNames[i]]))) : notLocalizedSymbols.push(
+                ExtraTimes(sourcePropertyValues[i], (translationResult[sourcePropertyNames[i]] - sourceResult[sourcePropertyValues[i]])))
+          }
+        }
       }
     }
     if (!notLocalizedSymbols.length) {
